@@ -1,0 +1,21 @@
+.sudoku-cell {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(238, 238, 238);
+  color: rgb(118, 39, 255);
+  border: 1px solid black;
+  
+  &.initial {
+    color: rgb(44, 44, 44);
+    background-color: rgb(210, 210, 210);
+  }
+
+  &.selected {
+    background-color: rgb(188, 188, 188);
+  }
+
+}
