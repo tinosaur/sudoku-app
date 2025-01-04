@@ -1,25 +1,35 @@
 import classNames from 'classnames';
 import './SudokuCell.scss';
-import { useMemo } from 'react';
-import { SelectedCell } from './SudokuContainer';
+import { Dispatch, SetStateAction } from 'react';
+import type { SudokuCell, SudokuGrid } from './SudokuContainer';
 
 interface SudokuCellProps {
-  content: string;
-  initialCellsCoordinates: SelectedCell[];
-  cellCoordinates: SelectedCell;
-  cellIsSelected: boolean;
-  setSelectedCell: (x: number, y: number) => void;
+  cell: SudokuCell;
+  setCurrentGrid: Dispatch<SetStateAction<SudokuGrid | undefined>>;
 }
 
-export function SudokuCell({ content, initialCellsCoordinates, cellCoordinates, cellIsSelected, setSelectedCell }: SudokuCellProps) {
-  const cellIsInitial = useMemo(() => initialCellsCoordinates.filter((address) => address.x === cellCoordinates.x && address.y === cellCoordinates.y).length === 1, [initialCellsCoordinates]);
-
+export function SudokuCell({ cell, setCurrentGrid }: SudokuCellProps) {
   return (
     <div
-      className={classNames('sudoku-cell', {'initial': cellIsInitial, 'selected': cellIsSelected})}
-      onClick={() => setSelectedCell(cellIsInitial ? -1 : cellCoordinates.x, cellCoordinates.y)}
+      className={classNames('sudoku-cell', {'initial': cell.initial, 'selected':  cell.selected})}
+      onClick={() => setCurrentGrid((currentGrid) => {
+        if (!currentGrid) return currentGrid;
+
+        const currentGridCopy = [...currentGrid];
+        const targetRowToUnselect = currentGridCopy.find((row) => row.find((cell) => cell.selected) !== undefined);
+        if (targetRowToUnselect !== undefined) {
+          const targetCellToUnselect = targetRowToUnselect.find((cell) => cell.selected);
+          if (targetCellToUnselect !== undefined) {
+            targetCellToUnselect.selected = false;
+          }
+        }
+
+        cell.selected = true;
+
+        return currentGridCopy;
+      })}
     >
-      {content === '0' ? '' : content}
+      {cell.value === 0 ? '' : cell.value}
     </div>
   )
 }

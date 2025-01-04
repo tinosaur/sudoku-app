@@ -8,7 +8,7 @@ function App() {
   
   return (
     <div className='main-container'>
-      <SudokuContainer initialGrid={INITIAL_GRID} />
+      <SudokuContainer initialSudokuWord={INITIAL_GRID} />
     </div>
   );
 }

@@ -4,15 +4,24 @@ import { NumbersRow } from "./NumbersRow";
 import './SudokuContainer.scss';
 
 interface SudokuContainerProps {
-  initialGrid: string;
+  initialSudokuWord: string;
 }
 
-export type SudokuGrid = string[][];
-
-export type SelectedCell = {
+export type SudokuCellCoordinates = {
   x: number,
   y: number,
 };
+
+export type SudokuCell = {
+  value: number,
+  selected: boolean,
+  initial: boolean,
+  coordinates: SudokuCellCoordinates,
+};
+
+export type SudokuGrid = SudokuCell[][];
+
+type SudokuStringGrid = string[][];
 
 function splitWordIntoRows(sudokuWord: string): string[] {
   const rows: string[] = [];
@@ -26,40 +35,50 @@ function splitWordIntoRows(sudokuWord: string): string[] {
   return rows;
 }
 
-const splitWordIntoGrid = (sudokuWord: string): SudokuGrid => splitWordIntoRows(sudokuWord).map((row) => row.split(''));
+const splitWordIntoStringGrid = (sudokuWord: string): SudokuStringGrid => splitWordIntoRows(sudokuWord).map((row) => row.split(''));
 
-function placeNumberInCell(numberToPlace: number, selectedCellCoordinates: { x: number, y: number }, currentGrid: SudokuGrid): SudokuGrid {
-  currentGrid[selectedCellCoordinates.y][selectedCellCoordinates.x] = numberToPlace.toString();
-  return [...currentGrid];
+const enrichSudokuStringGrid = (stringGrid: SudokuStringGrid): SudokuGrid => stringGrid.map((row, indexY) => row.map((cell, indexX) => {
+  return {
+    value: Number(cell),
+    selected: false,
+    initial: cell !== '0',
+    coordinates: {
+      x: indexX,
+      y: indexY,
+    },
+  }
+}))
+
+const getGridFromSudokuWord = (sudokuWord: string): SudokuGrid => enrichSudokuStringGrid(splitWordIntoStringGrid(sudokuWord));
+
+function placeDigit(digitToPlace: number, currentGrid: SudokuGrid | undefined): SudokuGrid | undefined {
+  if (!currentGrid) return currentGrid;
+
+  const currentGridCopy = [...currentGrid];
+  const targetRow = currentGridCopy.find((row) => row.find((cell) => cell.selected && !cell.initial) !== undefined);
+  if (!targetRow) return currentGrid;
+
+  const targetCell = targetRow.find((cell) => cell.selected && !cell.initial);
+  if (!targetCell) return currentGrid;
+
+  targetCell.value = digitToPlace;
+  
+  return currentGridCopy;
 }
 
-export function SudokuContainer({ initialGrid }: SudokuContainerProps) {
-  const transformedInitialGrid = useMemo(() => splitWordIntoGrid(initialGrid), [initialGrid]);
+export function SudokuContainer({ initialSudokuWord }: SudokuContainerProps) {
+  const initialGrid = useMemo(() => getGridFromSudokuWord(initialSudokuWord), [initialSudokuWord]);
   const [currentGrid, setCurrentGrid] = useState<SudokuGrid>();
-  const [selectedCell, setSelectedCell] = useState<SelectedCell>();
-  const initialCellsCoordinates = useMemo(() => {
-    const addresses: SelectedCell[] = [];
-    transformedInitialGrid.forEach((row, indexY) => row.forEach((cell, indexX) => {
-      if (cell !== '0') addresses.push({x: indexX, y: indexY});
-    }));
-    return addresses;
-  }, [transformedInitialGrid])
 
-  useEffect(() => setCurrentGrid(transformedInitialGrid), [transformedInitialGrid]);
-  console.log(initialCellsCoordinates)
+  useEffect(() => setCurrentGrid(initialGrid), [initialGrid]);
 
   return (
     <div className='sudoku-container'>
       <SudokuGrid
         currentGrid={currentGrid ?? []}
-        initialCellsCoordinates={initialCellsCoordinates}
-        selectedCell={selectedCell ?? {x: -1, y: -1}}
-        setSelectedCell={(selectedX, selectedY) => setSelectedCell(selectedX === -1 ? undefined : {x: selectedX, y: selectedY})}
+        setCurrentGrid={setCurrentGrid}
       />
-      <NumbersRow onClick={(numberToPlace) => {
-        if (!selectedCell) return;
-        setCurrentGrid((prev) => placeNumberInCell(numberToPlace, selectedCell, prev!))
-      }}/>
+      <NumbersRow onClick={(numberToPlace) => setCurrentGrid((prev) => placeDigit(numberToPlace, prev))}/>
     </div>
   )
 }
