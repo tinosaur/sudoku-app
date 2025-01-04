@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import './SudokuCell.scss';
 import { Dispatch, SetStateAction } from 'react';
 import type { SudokuCell, SudokuGrid } from './SudokuContainer';
 
@@ -11,7 +10,14 @@ interface SudokuCellProps {
 export function SudokuCell({ cell, setCurrentGrid }: SudokuCellProps) {
   return (
     <div
-      className={classNames('sudoku-cell', {'initial': cell.initial, 'selected':  cell.selected})}
+      className={classNames('sudoku-cell', {
+        'initial': cell.initial,
+        'selected':  cell.selected,
+        'top-border': cell.coordinates.y % 3 === 0,
+        'bottom-border': cell.coordinates.y % 3 === 2,
+        'left-border': cell.coordinates.x % 3 === 0,
+        'right-border': cell.coordinates.x % 3 === 2,
+      })}
       onClick={() => setCurrentGrid((currentGrid) => {
         if (!currentGrid) return currentGrid;
 

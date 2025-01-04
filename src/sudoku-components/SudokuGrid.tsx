@@ -1,4 +1,3 @@
-import './SudokuGrid.scss';
 import { SudokuCell } from "./SudokuCell";
 import type { SudokuGrid } from "./SudokuContainer";
 import { Dispatch, SetStateAction } from 'react';
