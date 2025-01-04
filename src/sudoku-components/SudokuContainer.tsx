@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { SudokuGrid } from "./SudokuGrid";
 import { NumbersRow } from "./NumbersRow";
-import './SudokuContainer.scss';
+import { Erase } from "./Erase";
+
+import './Sudoku.scss';
+import './Controls.scss';
 
 interface SudokuContainerProps {
   initialSudokuWord: string;
@@ -78,7 +81,8 @@ export function SudokuContainer({ initialSudokuWord }: SudokuContainerProps) {
         currentGrid={currentGrid ?? []}
         setCurrentGrid={setCurrentGrid}
       />
-      <NumbersRow onClick={(numberToPlace) => setCurrentGrid((prev) => placeDigit(numberToPlace, prev))}/>
+      <NumbersRow onClick={(numberToPlace) => setCurrentGrid((prev) => placeDigit(numberToPlace, prev))} />
+      <Erase onClick={() => setCurrentGrid((prev) => placeDigit(0, prev))} />
     </div>
   )
 }

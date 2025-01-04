@@ -1,5 +1,3 @@
-import './Number.scss';
-
 interface NumberProps {
   content: number;
   onClick: () => void;
@@ -8,7 +6,7 @@ interface NumberProps {
 export function Number({ content, onClick }: NumberProps) {
   return (
     <div
-      className='number'
+      className='button number'
       onClick={onClick}
     >
       {content}

@@ -1,0 +1,40 @@
+.sudoku-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  font-family: "Arvo", serif;
+  font-weight: 700;
+  font-style: normal;
+
+  .sudoku-grid {
+    width: 600px;
+    height: 600px;
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+    grid-template-columns: repeat(9, 1fr);
+    border: 1px solid black;
+
+    .sudoku-cell {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgb(238, 238, 238);
+      color: rgb(118, 39, 255);
+      border: 1px solid black;
+      
+      &.initial {
+        color: rgb(44, 44, 44);
+        background-color: rgb(210, 210, 210);
+      }
+    
+      &.selected {
+        background-color: rgb(188, 188, 188);
+      }
+    }
+  }
+}

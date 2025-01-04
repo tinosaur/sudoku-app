@@ -1,5 +1,4 @@
 import { Number } from "./Number";
-import './NumbersRow.scss';
 
 interface NumbersRowProps {
   onClick: (numberToPlace: number) => void;

@@ -1,0 +1,25 @@
+.numbers-container {
+  width: 540px;
+  height: 60px;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: 1fr;
+  border: 1px solid black;
+}
+
+.button {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+  color: black;
+  border: 1px solid black;
+
+  &.erase {
+    height: 60px;
+    padding: 0 30px;
+    border-width: 2px;
+  }
+}
